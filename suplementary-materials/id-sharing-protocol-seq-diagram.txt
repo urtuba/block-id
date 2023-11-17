@@ -1,0 +1,44 @@
+title BlockID, Identity sharing protocol sequence diagram
+
+participant User
+participant Exchange1
+participant Exchange2
+participant Exchange3
+participant BlockID Contract
+participant BlockID
+
+User->Exchange1:Verifies its identity, providing\npersonal info, documents and biomentrics
+User<-Exchange1:Asks if it wants to share ID information\nvia BlockID protocol
+User->BlockID Contract:If yes, connects its own wallet\nGives grant to Exchange1
+User->Exchange2:Verifies its identity, providing\npersonal info, documents and biomentrics
+User<-Exchange2:Asks if it wants to share ID information\nvia BlockID protocol
+User->BlockID Contract:If yes, connects its own wallet\nGives grant to Exchange1
+User->Exchange3:Registers
+User<-Exchange3:Please verify your identity,\nYou can either submit your documents,\nor you can use BlockId
+User->Exchange3:User clicks to verify using BlockId. Share my ID with Exchange3.
+BlockId Contract->BlockID
+User<-Exchange3:Initiates share grant transaction, sends it to the user's browser wallet. (Metamask)
+User->BlockID Contract:User approves the transaction, gives BlockID grant to share its ID information.\n
+BlockID Contract->(1)BlockID:Gets the event of ID sharing grant for the wallet.
+par 
+    BlockID -> Exchange1: Reqeust to share zk proof of ID data
+    BlockID <-- Exchange1: Returns zk proof
+    BlockID -> Exchange2: Reqeust to share zk proof of ID data
+    BlockID <-- Exchange2: Returns zk proof
+end
+activate BlockID
+BlockID -> BlockID:Validate both exchanges have the same data\nWhile not having any revealed data\nIf the validation is successful;\npick one of [Exchange1, Exchange2] as data source
+deactivate BlockID
+Exchange2<-BlockID:Request exchange's [create-share-code] endpoint to create a [share code] that is valid for short time
+Exchange2-->BlockID:Get the [share code]
+par
+BlockID Contract<-BlockID:Ping the contract with zk-proofs and data source client and the destination client\nSo that any external observer can validate ownership of the same data
+
+Exchange3<-BlockID:Request [callback-endpoint] of Exchange3\n  with [share-id-endpoint] of Exchange2 and share code
+end
+
+BlockID ->> BlockID Contract
+
+
+Exchange2<-Exchange3:Request [share-id-endpoint] with [share-code]
+Exchange2->Exchange3:Return response with identity information.
