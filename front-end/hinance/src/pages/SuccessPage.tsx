@@ -2,9 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./index.css";
 import successImage from "../constants/success.svg";
+import connectYourIdentityButtonImage from "../constants/connect-your-identity.svg";
+import { useConnect } from "wagmi";
 
 function SuccessPage() {
   const navigate = useNavigate();
+
+  const { connect, connectors, error, isLoading, pendingConnector } =
+    useConnect();
 
   // Function to handle form submission
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -13,6 +18,11 @@ function SuccessPage() {
     navigate("/");
   };
 
+  // const handleConnectYourIdentity = () => {
+  //   // Check if user connected wallet or not
+  //   // If not, popup a modal to ask user to connect wallet
+  //   connect({ connector });
+  // };
   return (
     <div className="kyc-container">
       <div className="kyc-form-container">
@@ -23,7 +33,17 @@ function SuccessPage() {
           <div style={{ display: "flex", justifyContent: "center" }}>
             <img src={successImage} alt="success" />
           </div>
-          <button type="submit" className="submit-btn">
+          {/* <div
+            style={{ display: "flex", justifyContent: "center" }}
+            onClick={handleConnectYourIdentity}
+          >
+            <img
+              src={connectYourIdentityButtonImage}
+              alt="connect-your-identity"
+            />
+          </div> */}
+
+          <button type="submit" className="register-btn">
             Go to Home
           </button>
         </form>
