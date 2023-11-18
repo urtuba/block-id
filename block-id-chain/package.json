@@ -9,7 +9,8 @@
     "zk:circuits:clean": "./zk/scripts/clean-artifacts-circuits.sh",
     "zk:circuits:keys": "./zk/scripts/generate-keys.sh",
     "zk:trusted-setup": "./zk/scripts/trusted-setup.sh",
-    "zk:trusted-setup:clean": "./zk/scripts/clean-artifacts-trusted-setup.sh"
+    "zk:trusted-setup:clean": "./zk/scripts/clean-artifacts-trusted-setup.sh",
+    "zk:sdk:example": "node ./zk/sdk/example.js"
   },
   "keywords": [],
   "author": "",
