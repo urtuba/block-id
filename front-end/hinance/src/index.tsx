@@ -11,6 +11,7 @@ import { WagmiConfig, createClient } from "wagmi";
 import { ConnectKitProvider, getDefaultClient } from "connectkit";
 import { zkChain } from "./constants/customChains";
 import LoginPage from "./pages/LoginPage";
+import SuccessPage from "./pages/SuccessPage";
 
 const client = createClient(
   getDefaultClient({
@@ -37,6 +38,10 @@ root.render(
             </Route>
             <Route path="/register" element={<App />}>
               <Route index element={<KycPage />} />
+              {/* Add more routes as needed */}
+            </Route>
+            <Route path="/success" element={<App />}>
+              <Route index element={<SuccessPage />} />
               {/* Add more routes as needed */}
             </Route>
           </Routes>

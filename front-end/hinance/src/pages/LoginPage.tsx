@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./index.css";
 import makeRequest from "src/utils/request";
@@ -28,9 +28,9 @@ function LoginPage() {
     try {
       const createdUser = (await makeRequest.post("/user", { email, password }))
         ?.data;
-      if (!createdUser) return console.log("Error creating user");
 
-      localStorage.setItem("userId", createdUser?.data?.id);
+      console.log(createdUser?.id);
+      localStorage.setItem("userId", createdUser?.id);
       setLoading(false);
       navigate("/register"); // Navigate to the registration route
     } catch (e) {

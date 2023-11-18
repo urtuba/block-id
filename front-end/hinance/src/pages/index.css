@@ -102,3 +102,7 @@
   transition: background-color 0.3s ease;
   margin-top: 1rem; /* Added margin to the top of the button */
 }
+
+.success {
+  height: 100vh;
+}

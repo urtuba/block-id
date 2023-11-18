@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./index.css";
+import makeRequest from "src/utils/request";
 
 function KycPage() {
   const navigate = useNavigate();
@@ -11,15 +12,35 @@ function KycPage() {
   const [idNumber, setIdNumber] = useState("");
   const [nationality, setNationality] = useState("");
   const [birthday, setBirthday] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // On page load make request
   useEffect(() => {});
 
   // Function to handle form submission
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     console.log({ firstName, lastName, idNumber, nationality, birthday });
+
+    const userId = localStorage.getItem("userId");
+    try {
+      const updatedUser = (
+        await makeRequest.post("/user/" + userId + "/kyc", {
+          firstName,
+          lastName,
+          identityNumber: idNumber,
+          nationality,
+          birthDate: birthday,
+        })
+      )?.data;
+
+      setLoading(false);
+      navigate("/success");
+    } catch (e) {
+      setLoading(false);
+      console.log(e);
+    }
   };
 
   return (
