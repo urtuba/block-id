@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "zk:circuits:compile": "./zk/scripts/compile-circuits.sh",
     "zk:circuits:clean": "./zk/scripts/clean-artifacts-circuits.sh",
+    "zk:circuits:keys": "./zk/scripts/generate-keys.sh",
     "zk:trusted-setup": "./zk/scripts/trusted-setup.sh",
     "zk:trusted-setup:clean": "./zk/scripts/clean-artifacts-trusted-setup.sh"
   },
