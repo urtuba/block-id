@@ -8,7 +8,7 @@ const hash = function (data, algorithm = "sha512") {
 
 const multiHash = function ({ arr, algorithm = "sha512"}) {
   return createHash(algorithm)                 
-    .update(arr.reduce((acc, val) => acc + hash(val), ""))
+    .update(arr.reduce((acc, val) => acc + hash(val, algorithm), ""))
     .digest('hex').toString('utf8');
 }
 

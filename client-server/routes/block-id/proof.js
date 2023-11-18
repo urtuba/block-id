@@ -8,7 +8,7 @@ const IdentityVerification = require("../../models/identity-verification.js");
 
 const appDir = path.dirname(require.main.filename);
 const circuitPath =
-  utils.getArtifactsPath() + "/circuits/CompleteIDVerification/";
+  utils.getArtifactsPath() + "circuits/CompleteIDVerification/";
 const circuitWasmFilePath =
   circuitPath + "CompleteIDVerification_js/CompleteIDVerification.wasm";
 const zkeyFilePath = circuitPath + "CompleteIDVerification.zkey";
@@ -28,7 +28,7 @@ const zkeyFilePath = circuitPath + "CompleteIDVerification.zkey";
  *         description: Wallet address of the user to verify.
  *         schema:
  *           type: string
- *       - in: query
+ *       - in: header
  *         name: block-id-api-key
  *         required: true
  *         description: Authenticates block id requests
@@ -69,7 +69,7 @@ module.exports = async (req, res) => {
       return res.status(404).send("User not found");
     }
 
-    const id = await IdentityVerification.findOne({ user });
+    const id = await IdentityVerification.findOne({ user: user._id });
     if (!id) {
       return res.status(404).send("Identity info not found");
     }
@@ -77,9 +77,9 @@ module.exports = async (req, res) => {
     const timestamp = Date.now();
 
     const clientId = process.env.BLOCK_ID_CLIENT_ID;
-    const kycIssuedAt = id.createdAt;
+    const kycIssuedAt = id.createdAt.toString();
     const fullName = id.firstName + " " + id.lastName;
-    const birthDate = id.birthDate; // Check if toString required
+    const birthDate = id.birthDate.toString(); // Check if toString required
     const identityNumber = id.identityNumber;
     const nationality = id.nationality;
 
@@ -87,6 +87,7 @@ module.exports = async (req, res) => {
     const outputProofFilePath = `${appDir}/artifacts/CompleteIDVerification_${timestamp}.proof.json`;
     const outputPublicSignalsFilePath = `${appDir}/artifacts/CompleteIDVerification_${timestamp}.proof.ps.json`;
 
+ 
     // Prepare input for witness generation.
     console.log("Preparing input for witness generation...");
     const input = {
