@@ -1,9 +1,6 @@
-# Sample Hardhat Project
+# BlockID
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
-
-Try running some of the following tasks:
-
+## Hardhat
 ```shell
 npx hardhat help
 npx hardhat test
@@ -12,7 +9,7 @@ npx hardhat node
 npx hardhat run scripts/deploy.js
 ```
 
-# ZK Setup
+## ZK Setup
 ```shell
 npm install -g circom2
 npm install -g snarkjs
@@ -21,13 +18,13 @@ npm run zk:circuits:compile
 npm run zk:circuits:keys
 ```
 
-# ZK Cleanup
+## ZK Cleanup
 ```shell
 npm run zk:circuits:clean
 npm run zk:trusted-setup:clean
 ```
 
-# ZK SDK
+## ZK SDK
 ```shell
 npm run zk:sdk:example
 ```
