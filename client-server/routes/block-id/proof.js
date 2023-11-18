@@ -16,11 +16,11 @@ const zkeyFilePath = circuitPath + "CompleteIDVerification.zkey";
 
 /**
  * @swagger
- * /api/identity-verification:
+ * /block-id/proof:
  *   get:
- *     summary: Retrieve identity verification proof and public signals.
+ *     summary: Retrieve a proof from Block ID.
  *     tags:
- *       - Identity Verification
+ *       - Block ID
  *     parameters:
  *       - in: query
  *         name: wallet
