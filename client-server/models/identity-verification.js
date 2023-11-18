@@ -2,12 +2,10 @@ const mongoose = require('mongoose')
 
 const IdentityVerificationSchema = new mongoose.Schema(
   {
-    userId: {
-      // Normally it references the _id field of the User model
-      // But for the sake of POC, we will use a string instead of creating a User model
+    user: {
       type: String,
       required: true,
-      unique: true,
+      ref: 'User',
     },
     firstName: {
       type: String,

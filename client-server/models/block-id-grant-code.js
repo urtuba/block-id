@@ -8,6 +8,11 @@ const BlockIdGrantCodeSchema = new mongoose.Schema(
       required: true,
       default: () => nanoid(10)
     },
+    user: {
+      type: String,
+      required: true,
+      ref: 'User'
+    },
     validUntil: {
       type: Date,
       required: true,
