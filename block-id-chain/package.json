@@ -1,0 +1,31 @@
+{
+  "name": "block-id-chain",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "zk:circuits:compile": "./zk/scripts/compile-circuits.sh",
+    "zk:circuits:clean": "./zk/scripts/clean-artifacts-circuits.sh",
+    "zk:circuits:keys": "./zk/scripts/generate-keys.sh",
+    "zk:trusted-setup": "./zk/scripts/trusted-setup.sh",
+    "zk:trusted-setup:clean": "./zk/scripts/clean-artifacts-trusted-setup.sh",
+    "zk:sdk:example": "node ./zk/sdk/example.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.19.1"
+  },
+  "dependencies": {
+    "block-id-sdk": "../block-id-sdk",
+    "circomlib": "^2.0.5",
+    "snarkjs": "^0.7.2"
+  },
+  "exports": {
+    ".": "./index.js",
+    "./artifacts": "./zk/artifacts"
+  }
+}
