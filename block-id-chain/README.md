@@ -1,5 +1,8 @@
 # BlockID
 
+Before cloning the project, install github large file system (LFS) plugin.
+We uploaded some generated artifacts to save time to work collaborative.
+
 ## Hardhat
 ```shell
 npx hardhat help
