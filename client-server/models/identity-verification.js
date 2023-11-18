@@ -42,4 +42,4 @@ const IdentityVerificationSchema = new mongoose.Schema(
   }
 )
 
-export default mongoose.model("IdentityVerification", IdentityVerificationSchema)
+module.exports = mongoose.model("IdentityVerification", IdentityVerificationSchema)

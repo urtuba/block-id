@@ -1,8 +1,8 @@
 const BlockIdGrantCode = require('../models/block-id-grant-code');
 
-module.exports = (req, res) => {
+module.exports = async (req, res) => {
   try {
-    const newGrantCode = new BlockIdGrantCode();
+    const newGrantCode = await BlockIdGrantCode.create({});
 
     res.status(201).send({ code: newGrantCode.code })
   } catch (err) {
