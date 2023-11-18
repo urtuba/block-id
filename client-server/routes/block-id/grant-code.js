@@ -1,5 +1,5 @@
-const User = require('../models/user');
-const BlockIdGrantCode = require('../models/block-id-grant-code');
+const User = require('../../models/user');
+const BlockIdGrantCode = require('../../models/block-id-grant-code');
 
 module.exports = async (req, res) => {
   const { walletAddress } = req.body;

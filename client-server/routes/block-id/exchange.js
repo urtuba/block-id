@@ -1,6 +1,6 @@
-const IdentityVerification = require('../models/identity-verification')
-const BlockIdGrantCode = require( '../models/block-id-grant-code' )
-const User = require( '../models/user' )
+const User = require( '../../models/user' )
+const BlockIdGrantCode = require( '../../models/block-id-grant-code' )
+const IdentityVerification = require('../../models/identity-verification')
 
 module.exports = async (req, res) => {
   const { code, walletAddress } = req.headers
