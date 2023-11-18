@@ -3,12 +3,14 @@ const path = require("path");
 const { prover, utils } = require("block-id-sdk");
 const { hashSignals } = utils;
 
-const User = require('../../models/user.js')
-const IdentityVerification = require('../../models/identity-verification.js')
+const User = require("../../models/user.js");
+const IdentityVerification = require("../../models/identity-verification.js");
 
 const appDir = path.dirname(require.main.filename);
-const circuitPath = utils.getArtifactsPath() + "/circuits/CompleteIDVerification/";
-const circuitWasmFilePath = circuitPath + "CompleteIDVerification_js/CompleteIDVerification.wasm";
+const circuitPath =
+  utils.getArtifactsPath() + "/circuits/CompleteIDVerification/";
+const circuitWasmFilePath =
+  circuitPath + "CompleteIDVerification_js/CompleteIDVerification.wasm";
 const zkeyFilePath = circuitPath + "CompleteIDVerification.zkey";
 // const vkeyFilePath = circuitPath + "CompleteIDVerification.vkey";
 
@@ -56,35 +58,35 @@ const zkeyFilePath = circuitPath + "CompleteIDVerification.zkey";
  *         description: Internal server error.
  */
 module.exports = async (req, res) => {
-  const { wallet } = req.query
-  if(!wallet) {
-    return res.status(400).send('Wallet required')
+  const { wallet } = req.query;
+  if (!wallet) {
+    return res.status(400).send("Wallet required");
   }
-  
+
   try {
-    const user = await User.findOne({ walletAddress: wallet })
-    if(!user) {
-      return res.status(404).send('User not found')
+    const user = await User.findOne({ walletAddress: wallet });
+    if (!user) {
+      return res.status(404).send("User not found");
     }
 
-    const id = await IdentityVerification.findOne({ user })
-    if(!id) {
-      return res.status(404).send('Identity info not found')
+    const id = await IdentityVerification.findOne({ user });
+    if (!id) {
+      return res.status(404).send("Identity info not found");
     }
 
-    const timestamp = Date.now()
-  
-    const clientId = process.env.BLOCK_ID_CLIENT_ID
-    const kycIssuedAt = id.createdAt
-    const fullName = id.firstName + ' ' id.lastName
-    const birthDate = id.birthDate // Check if toString required
-    const identityNumber = id.identityNumber
-    const nationality = id.nationality
-  
+    const timestamp = Date.now();
+
+    const clientId = process.env.BLOCK_ID_CLIENT_ID;
+    const kycIssuedAt = id.createdAt;
+    const fullName = id.firstName + " " + id.lastName;
+    const birthDate = id.birthDate; // Check if toString required
+    const identityNumber = id.identityNumber;
+    const nationality = id.nationality;
+
     const outputWitnessFilePath = `${appDir}/artifacts/CompleteIDVerification_${timestamp}.wtns`;
     const outputProofFilePath = `${appDir}/artifacts/CompleteIDVerification_${timestamp}.proof.json`;
     const outputPublicSignalsFilePath = `${appDir}/artifacts/CompleteIDVerification_${timestamp}.proof.ps.json`;
-    
+
     // Prepare input for witness generation.
     console.log("Preparing input for witness generation...");
     const input = {
@@ -92,20 +94,32 @@ module.exports = async (req, res) => {
       client_id_account_pair: hashSignals(clientId, wallet),
       client_signature_issued_at_pair: hashSignals(clientId, kycIssuedAt),
       full_name_birth_date_pair: hashSignals(fullName, birthDate),
-      identity_number_and_nationality_pair: hashSignals(identityNumber, nationality),
+      identity_number_and_nationality_pair: hashSignals(
+        identityNumber,
+        nationality
+      ),
     };
-  
+
     // Generate witness.
     console.log("Generating witness...");
-    await prover.generateWitness(input, circuitWasmFilePath, outputWitnessFilePath);
-  
+    await prover.generateWitness(
+      input,
+      circuitWasmFilePath,
+      outputWitnessFilePath
+    );
+
     // Generate proof and public signals.
     console.log("Generating proof and public signals...");
-    const { proof, publicSignals } = await prover.prove(outputWitnessFilePath, zkeyFilePath, outputProofFilePath, outputPublicSignalsFilePath);
-    
-    return res.send({ proof, publicSignals })
+    const { proof, publicSignals } = await prover.prove(
+      outputWitnessFilePath,
+      zkeyFilePath,
+      outputProofFilePath,
+      outputPublicSignalsFilePath
+    );
+
+    return res.send({ proof, publicSignals });
   } catch (err) {
-    console.error(err)
-    return res.status(500).send('Internal server error')
+    console.error(err);
+    return res.status(500).send("Internal server error");
   }
-}
+};
