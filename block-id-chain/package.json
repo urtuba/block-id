@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "zk:circuits:compile": "./zk/scripts/compile-circuits.sh",
+    "zk:circuits:clean": "./zk/scripts/clean-artifacts-circuits.sh",
+    "zk:trusted-setup": "./zk/scripts/trusted-setup.sh",
+    "zk:trusted-setup:clean": "./zk/scripts/clean-artifacts-trusted-setup.sh"
   },
   "keywords": [],
   "author": "",
@@ -12,5 +16,9 @@
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "hardhat": "^2.19.1"
+  },
+  "dependencies": {
+    "circomlib": "^2.0.5",
+    "snarkjs": "^0.7.2"
   }
 }
