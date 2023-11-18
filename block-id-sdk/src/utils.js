@@ -22,9 +22,14 @@ const hashSignal = function (signal) {
   return BigInt("0x" + hash.toString('hex'));
 }
 
+const getArtifactsPath = function () {
+  return "node_modules/block-id-chain/zk/artifacts/";
+}
+
 module.exports = {
   hash,
   multiHash,
   hashSignals,
-  hashSignal
+  hashSignal,
+  getArtifactsPath
 }

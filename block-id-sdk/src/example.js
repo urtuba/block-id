@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const { verifier, prover, utils } = require("block-id-sdk");
+const { verifier, prover, utils } = require("./index");
 const { hashSignals } = utils;
 
 
