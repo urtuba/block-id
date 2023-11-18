@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./index.css";
 
@@ -12,12 +12,14 @@ function KycPage() {
   const [nationality, setNationality] = useState("");
   const [birthday, setBirthday] = useState("");
 
+  // On page load make request
+  useEffect(() => {});
+
   // Function to handle form submission
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     console.log({ firstName, lastName, idNumber, nationality, birthday });
-    // navigate('/next-page');
   };
 
   return (
@@ -26,6 +28,14 @@ function KycPage() {
         <h3 className="kyc-title">Identity Verification</h3>
         <form onSubmit={handleSubmit} className="kyc-form">
           <h4>Get verified my account</h4>
+          <label>
+            First name
+            <input
+              type="text"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
+          </label>
           <label>
             Last name
             <input
@@ -58,7 +68,7 @@ function KycPage() {
               onChange={(e) => setBirthday(e.target.value)}
             />
           </label>
-          <button type="submit" style={{ marginTop: "10px" }}>
+          <button type="submit" className="submit-btn">
             Continue
           </button>
         </form>

@@ -59,7 +59,6 @@
 }
 
 .kyc-form button {
-  background-color: #ffc107; /* Yellow color for the button */
   border: none;
   padding: 1rem;
   border-radius: 0.5rem;
@@ -72,4 +71,34 @@
 
 .kyc-form button:hover {
   background-color: #e0a800; /* Darker yellow on hover */
+}
+
+.submit-btn,
+.register-btn {
+  padding: 1rem;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border: none; /* Remove default border */
+  margin-top: 10px; /* Spacing from the previous element */
+  width: 100%; /* Full width within the form */
+}
+
+.submit-btn {
+  background-color: #ffc107; /* Your primary button color */
+}
+
+.register-btn {
+  border: 1px solid #ffc107 !important;
+  background-color: transparent; /* A different color for the register button */
+  color: #ffc107 !important; /* Text color for the register button */
+  margin-top: 10px !important; /* More spacing from the continue button */
+}
+
+.register-btn:hover {
+  border: none;
+  color: #000000 !important; /* Black text color for button */
+  transition: background-color 0.3s ease;
+  margin-top: 1rem; /* Added margin to the top of the button */
 }
