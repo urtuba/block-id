@@ -6,4 +6,4 @@ const authorizeBlockId = async (req, res, next) => {
   return next()
 }
 
-export default authorizeBlockId
+module.exports = authorizeBlockId

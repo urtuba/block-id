@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+const mongoose = require('mongoose')
 
 const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/block-id'
 
@@ -9,4 +9,4 @@ const connectDb = () => {
   })
 }
 
-export default connectDb
+module.exports = connectDb

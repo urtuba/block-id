@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const nanoid = require('nanoid')
+const {nanoid} = require('nanoid')
 
 const BlockIdGrantCodeSchema = new mongoose.Schema(
   {
@@ -20,4 +20,4 @@ const BlockIdGrantCodeSchema = new mongoose.Schema(
   }
 )
 
-export default mongoose.model('BlockIdGrantCode', BlockIdGrantCodeSchema)
+module.exports =  mongoose.model('BlockIdGrantCode', BlockIdGrantCodeSchema)
