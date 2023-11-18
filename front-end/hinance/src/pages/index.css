@@ -1,0 +1,108 @@
+.kyc-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #121212; /* Matches the background */
+  font-family: "Clash Grotesk", sans-serif;
+}
+
+.kyc-form-container {
+  background-color: #222222;
+  padding: 2rem;
+  padding-top: 1rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 500px; /* Adjust as needed */
+  margin: auto; /* Center the container */
+  margin-top: 50px;
+}
+
+.kyc-title {
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 0.5rem; /* Spacing between the title and the form */
+}
+
+.kyc-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.kyc-form h4 {
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+.kyc-form label {
+  display: grid; /* Makes the label a block element, placing it above the input field */
+  color: #ffffff; /* White text color for the labels */
+  font-size: 1rem;
+  margin-bottom: 0.5rem; /* Space between label and input */
+}
+
+.kyc-form input {
+  background-color: #333333; /* Slightly lighter than the form background for contrast */
+  border: 1px solid #444444; /* Added border to match the image */
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  color: #ffffff; /* White text color for input */
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem; /* Space between input fields */
+}
+
+.kyc-form input::placeholder {
+  color: #bbbbbb; /* Lighter color for placeholder text */
+}
+
+.kyc-form button {
+  border: none;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  color: #000000; /* Black text color for button */
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem; /* Added margin to the top of the button */
+}
+
+.kyc-form button:hover {
+  background-color: #e0a800; /* Darker yellow on hover */
+}
+
+.submit-btn,
+.register-btn {
+  padding: 1rem;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border: none; /* Remove default border */
+  margin-top: 10px; /* Spacing from the previous element */
+  width: 100%; /* Full width within the form */
+}
+
+.submit-btn {
+  background-color: #ffc107; /* Your primary button color */
+}
+
+.register-btn {
+  border: 1px solid #ffc107 !important;
+  background-color: transparent; /* A different color for the register button */
+  color: #ffc107 !important; /* Text color for the register button */
+  margin-top: 10px !important; /* More spacing from the continue button */
+}
+
+.register-btn:hover {
+  border: none;
+  color: #000000 !important; /* Black text color for button */
+  transition: background-color 0.3s ease;
+  margin-top: 1rem; /* Added margin to the top of the button */
+}
+
+.success {
+  height: 100vh;
+}
