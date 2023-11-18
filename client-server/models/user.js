@@ -4,7 +4,6 @@ const BlockIdGrantCodeSchema = new mongoose.Schema(
   {
     walletAddress: {
       type: String,
-      unique: true
     },
   },
   {

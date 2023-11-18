@@ -1,6 +1,48 @@
 const User = require('../../models/user');
 const BlockIdGrantCode = require('../../models/block-id-grant-code');
 
+/**
+ * @swagger
+ * /block-id/grant-code:
+ *   post:
+ *     summary: Create a new grant code for Block ID.
+ *     tags:
+ *       - Block ID
+ *     parameters:
+ *       - in: header
+ *         name: block-id-api-key
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: API key needed to authorize the request.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               walletAddress:
+ *                 type: string
+ *                 description: The user's wallet address.
+ *     responses:
+ *       201:
+ *         description: Grant code created successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: string
+ *                   description: The newly created grant code.
+ *       400:
+ *         description: Bad request. Missing wallet address.
+ *       404:
+ *         description: User not found.
+ *       500:
+ *         description: Internal Server Error.
+ */
 module.exports = async (req, res) => {
   const { walletAddress } = req.body;
 

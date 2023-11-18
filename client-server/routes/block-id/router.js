@@ -1,10 +1,10 @@
 const express = require('express')
-const blockIdGrantCode = require( '../../models/block-id-grant-code' )
+const authorizeBlockId = require( '../../utils/authorize-block-id' )
 
 const blockIdRouter = express.Router()
 
-router.post('/grant-code', blockIdGrantCode, require('./grant-code'))
-router.get('/proof', blockIdGrantCode, require('./proof'))
-router.get('/exchange', require('./exchange'))
+blockIdRouter.post('/grant-code', authorizeBlockId, require('./grant-code'))
+blockIdRouter.get('/proof', authorizeBlockId, require('./proof'))
+blockIdRouter.get('/exchange', require('./exchange'))
 
 module.exports = blockIdRouter
