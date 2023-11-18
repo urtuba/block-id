@@ -1,5 +1,5 @@
-import mongoose from 'mongoose'
-import nanoid from 'nanoid'
+const mongoose = require('mongoose')
+const nanoid = require('nanoid')
 
 const BlockIdGrantCodeSchema = new mongoose.Schema(
   {

@@ -1,5 +1,4 @@
-import mongoose from "mongoose"
-import nanoid from "nanoid"
+const mongoose = require('mongoose')
 
 const IdentityVerificationSchema = new mongoose.Schema(
   {
