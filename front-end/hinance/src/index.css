@@ -1,0 +1,17 @@
+@import url("https://fonts.googleapis.com/css2?family=Clash+Grotesk:wght@400;500&display=swap");
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  background-color: #121212; /* Your desired background color */
+}
+
+#root {
+  height: 100%;
+  font-family: "Clash Grotesk", sans-serif; /* Set the font for the container */
+}
+
+.hinance-logo {
+  background-image: url(./constants/hinance.svg);
+}
