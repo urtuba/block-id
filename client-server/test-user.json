@@ -1,0 +1,10 @@
+{
+  "walletAddress": "0x1234567890123456789012345678901234567890",
+  "identity": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "identityNumber": "1234567890",
+    "nationality": "US",
+    "birthDate": "1990-01-01"
+  }
+}

@@ -20,7 +20,7 @@ const IdentityVerification = require('../../models/identity-verification')
  *               source:
  *                 type: string
  *                 description: The source of the callback.
- *                 example: "source_name"
+ *                 example: "source_url"
  *               code:
  *                 type: string
  *                 description: The code received for verification.
@@ -48,9 +48,9 @@ module.exports = async (req, res) => {
       return res.status(404).send('User not found')
     }
     
-    const exchangeIdPath = source + 'block-id/exchange'
+    const exchangeIdPath = source + '/block-id/exchange'
     const { data, status } = await axios.get(exchangeIdPath, {
-      params: { code, wallet }
+      headers: { code, wallet }
     })
 
     if (status !== 200) {
