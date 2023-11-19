@@ -11,10 +11,9 @@
 // 3. An utility to get client information [clientId, clientName, clientUrl] from our contract
 // 4. A contract call to 'pingIdentityVerification(walletAddress, [proofs], demandingClient, result)' to only publish an event.
 
-import { getAuthorizedSources, getProofs, validateDataConsistency, validateProofs, validateDataConsistency, getGrantCodeFromSource, getClient } from "./helpers";
+const { getAuthorizedSources, getProofs, validateDataConsistency, validateProofs, getGrantCodeFromSource, getClient } = require("./helpers");
 
-
-orchestrateIdentitySync = async (walletAddress, demandingClientId) => {
+const orchestrateIdentitySync = async (walletAddress, demandingClientId) => {
   // TODO: this orchestration should be triggered when a syncRequest event is emitted. see BLOCKCHAIN CONNECTION REQUIREMENTS 2.
   try {
     const sources = await getAuthorizedSources(walletAddress)
@@ -44,7 +43,7 @@ orchestrateIdentitySync = async (walletAddress, demandingClientId) => {
     const grantCode = await getGrantCodeFromSource(sourceClient)
 
     const demandingClient = await getClient(demandingClientId)
-    const { data, status } = await axios.post(demandingClientId + '/block-id/callback', { code: grantCode, wallet: walletAddress, source: sourceClient.clientUrl }, { params: { 'block-id-api-key': process.env.API_KEY } })
+    const { data, status } = await axios.post(demandingClient.url + '/block-id/callback', { code: grantCode, wallet: walletAddress, source: sourceClient.clientUrl }, { params: { 'block-id-api-key': process.env.API_KEY } })
     const success = status === 200
     if(success) {
       console.log('Identity data synced channel opened with ' + demandingClient.name)
@@ -57,4 +56,6 @@ orchestrateIdentitySync = async (walletAddress, demandingClientId) => {
   }
 }
 
-
+module.exports = {
+  orchestrateIdentitySync
+}
