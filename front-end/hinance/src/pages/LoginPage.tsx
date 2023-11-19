@@ -4,32 +4,10 @@ import "./index.css";
 import makeRequest from "src/utils/request";
 import { CircularProgress } from "@mui/material";
 import { sleep } from "src/utils/sleep";
-import continueWithBlockid from "src/constants/continue-with-blockid.svg";
-import {
-  useAccount,
-  useConnect,
-  useContractWrite,
-  useContractRead,
-  usePrepareContractWrite,
-  useSigner,
-  useWaitForTransaction,
-} from "wagmi";
-import { utils } from "ethers";
-import { BlockIDAccountABI } from "src/constants/block-id-abi";
 
 function LoginPage() {
   const navigate = useNavigate();
 
-  const { connector: activeConnector, isConnected, address } = useAccount();
-  const { data: signer, isError, isLoading: signerLoading } = useSigner();
-
-  const {
-    connect,
-    connectors,
-    error,
-    isLoading: connectLoading,
-    pendingConnector,
-  } = useConnect();
   // State for each form field
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -41,54 +19,6 @@ function LoginPage() {
 
     console.log({ email, password });
     navigate("/next-page");
-  };
-
-  const { config, error: contractWriteError } = usePrepareContractWrite({
-    addressOrName: "0x68a6Be86908e07932380A7Dc7Fb3773a49C1389b",
-    contractInterface: BlockIDAccountABI.abi,
-    functionName: "requestIdentity",
-    args: [address, 1],
-  });
-  const { data: dataClient } = useContractRead({
-    addressOrName: "0x68a6Be86908e07932380A7Dc7Fb3773a49C1389b",
-    contractInterface: BlockIDAccountABI.abi,
-    functionName: "getClient",
-    args: [2],
-  });
-
-  const { data, write } = useContractWrite(config);
-
-  const { isLoading, isSuccess } = useWaitForTransaction({
-    hash: data?.hash,
-  });
-
-  useEffect(() => {
-    try {
-      if (isSuccess) {
-        console.log(data);
-        alert("Logging in with BlockID");
-        navigate("/success");
-      }
-    } catch (e) {
-      alert("Success");
-    }
-  }, [data, isSuccess]);
-
-  const handleContinueWithBlockid = async () => {
-    // Wagmi
-    if (isConnected) {
-      const createdUser = await makeRequest.put("/user/wallet-address", {
-        id: localStorage.getItem("userId"),
-        walletAddress: address,
-      });
-      // Wagmi contract call
-      write?.();
-    } else {
-      const connector = connectors.find(
-        (connector) => connector.name === "MetaMask"
-      );
-      connect({ connector });
-    }
   };
 
   // Function to handle navigation to the registration page
@@ -144,12 +74,6 @@ function LoginPage() {
               "Register"
             )}
           </button>
-          <div
-            style={{ display: "flex", justifyContent: "center" }}
-            onClick={handleContinueWithBlockid}
-          >
-            <img src={continueWithBlockid} alt="continue-with-blockid" />
-          </div>
         </form>
         {/* <h3>{dataClient}</h3> */}
       </div>
