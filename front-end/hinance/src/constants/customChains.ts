@@ -2,8 +2,8 @@ import { Chain } from "wagmi";
 
 export const zkChain = {
   name: "Local zkSync Era",
-  id: 260,
-  rpcUrls: { default: "http://localhost:8011" }, // "https://rpc.zksync.io/",
+  id: 280,
+  rpcUrls: { default: "https://testnet.era.zksync.dev" }, // "http://localhost:8011",
   blockExplorers: {
     default: { name: "zkSync", url: "https://zkscan.io/" },
     zkSync: { name: "zkSync", url: "https://zkscan.io/" },
