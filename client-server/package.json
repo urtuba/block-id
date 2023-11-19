@@ -4,7 +4,10 @@
   "description": "An example client which stands for an exchange that does id verification.",
   "main": "index.js",
   "scripts": {
-    "start": "node -r dotenv/config index.js"
+    "start": "node -r dotenv/config index.js",
+    "demo:exchange1": "node -r dotenv/config index.js dotenv_config_path=.env.demo-client-1",
+    "demo:exchange2": "node -r dotenv/config index.js dotenv_config_path=.env.demo-client-2",
+    "demo:exchange3": "node -r dotenv/config index.js dotenv_config_path=.env.demo-client-3"
   },
   "author": "urtuba",
   "license": "MIT",
