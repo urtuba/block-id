@@ -19,10 +19,11 @@ export const getProofs = async (sources) => {
 export const getClient = async (clientId) => {
   // TODO: contract call, get client { clientId, clientName, clientUrl }
 
-  return {clientId: 'client3', name: 'Exchange 3', clientUrl: 'http://localhost:3003'};
+  return {id: 'client3', name: 'Exchange 3', url: 'http://localhost:3003'};
 }
 
 export const validateProofs = async (zkProofs) => {
+  // TODO: If proofs are not valid, throw an error
   // TODO: verifyProofs(zkProofs)
   // [{clientId, verified}]
   return [{clientId: 'client1', verified: true}, {clientId: 'client2', verified: true}];
