@@ -3,7 +3,15 @@ import { useNavigate } from "react-router-dom";
 import "./index.css";
 import successImage from "../constants/success.svg";
 import connectYourIdentityButtonImage from "../constants/connect-your-identity.svg";
-import { useAccount, useConnect, useSigner } from "wagmi";
+import {
+  useAccount,
+  useConnect,
+  useContractWrite,
+  usePrepareContractWrite,
+  useSigner,
+  useWaitForTransaction,
+} from "wagmi";
+import { BlockIDAccountABI } from "src/constants/block-id-abi";
 
 function SuccessPage() {
   const navigate = useNavigate();
@@ -19,6 +27,23 @@ function SuccessPage() {
     pendingConnector,
   } = useConnect();
 
+  const { config, error: contractWriteError } = usePrepareContractWrite({
+    addressOrName: "0x7A763395073FDE9CC7EcC6E6BDB98239fB39396b",
+    contractInterface: BlockIDAccountABI.abi,
+    functionName: "requestIdentity",
+    args: [address, 1],
+  });
+
+  const { data, write } = useContractWrite(config);
+
+  const { isLoading, isSuccess } = useWaitForTransaction({
+    hash: data?.hash,
+  });
+
+  useEffect(() => {
+    console.log({ isSuccess, data });
+  }, [data, isSuccess]);
+
   // Function to handle form submission
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -27,12 +52,17 @@ function SuccessPage() {
   };
 
   const handleConnectYourIdentity = () => {
-    // Check if user connected wallet or not
-    // If not, popup a modal to ask user to connect wallet
-    const connector = connectors.find(
-      (connector) => connector.name === "MetaMask"
-    );
-    connect({ connector });
+    console.log("adasdas");
+    console.log(isConnected);
+    if (isConnected) {
+      // Wagmi contract call
+      write?.();
+    } else {
+      const connector = connectors.find(
+        (connector) => connector.name === "MetaMask"
+      );
+      connect({ connector });
+    }
   };
 
   const processAccountAbstraction = async () => {

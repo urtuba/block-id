@@ -7,6 +7,7 @@ const blockIdRouter = require("./routes/block-id/router");
 const apiRouter = require("./routes/api/router");
 const swaggerDocs = require("./swagger");
 const cors = require("cors");
+const { getTransfer } = require("./utils/block-id/event-listener");
 
 connectDb();
 const app = express();
