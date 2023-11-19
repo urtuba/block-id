@@ -24,12 +24,12 @@ const config: HardhatUserConfig = {
       accounts: [
         "2ab6b8a9f6a6272b8692591f235aa1aa3ba58994feefd1a04c9f251530b4f3e8",
       ],
-      // Verification endpoint for Goerli
     },
     scrollSepolia: {
       url: "https://sepolia-rpc.scroll.io/" || "",
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      accounts: [
+        "2ab6b8a9f6a6272b8692591f235aa1aa3ba58994feefd1a04c9f251530b4f3e8",
+      ],
     },
   },
   solidity: {

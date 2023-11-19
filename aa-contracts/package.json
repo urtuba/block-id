@@ -6,7 +6,7 @@
   "scripts": {
     "test": "hardhat test",
     "deploy:factory": "yarn hardhat deploy-zksync --script deploy-factory.ts",
-    "deploy:multisig": "yarn hardhat deploy-zksync --script deploy-multisig.ts"
+    "deploy-block-id": "yarn hardhat deploy-zksync --script deploy-block-id.ts"
   },
   "devDependencies": {
     "ethers": "^5.7.0",
