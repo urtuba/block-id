@@ -4,6 +4,7 @@ include "poseidon.circom";
 
 template BasicIDVerification() {
     // Inputs
+    signal input data_hash;
     signal input client_id_account_pair;
     signal input client_signature_issued_at_pair;
     // Outputs
@@ -16,4 +17,4 @@ template BasicIDVerification() {
     basic_identity_verification <== hash.out;
 }
 
-component main {public [client_id_account_pair, client_signature_issued_at_pair]} = BasicIDVerification();
+component main {public [client_id_account_pair, client_signature_issued_at_pair, data_hash]} = BasicIDVerification();

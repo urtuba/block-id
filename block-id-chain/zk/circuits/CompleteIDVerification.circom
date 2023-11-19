@@ -4,6 +4,7 @@ include "poseidon.circom";
 
 template CompleteIDVerification() {
     // Inputs
+    signal input data_hash;
     signal input client_id_account_pair;
     signal input client_signature_issued_at_pair;
     signal input full_name_birth_date_pair;
@@ -20,4 +21,4 @@ template CompleteIDVerification() {
     complete_identity_verification <== hash.out;
 }
 
-component main {public [client_id_account_pair, client_signature_issued_at_pair]} = CompleteIDVerification();
+component main {public [data_hash, client_id_account_pair, client_signature_issued_at_pair]} = CompleteIDVerification();
