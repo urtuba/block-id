@@ -1,6 +1,26 @@
 const axios = require('axios');
+const ethers = require("ethers");
 
 const { getAuthorizedSources, getProofs, validateDataConsistency, validateProofs, getGrantCodeFromSource, getClient } = require("./helpers");
+
+
+const { BlockIDAccountABI } = require("./abi");
+
+const getContract = () => {
+  const blockIDAddress = "0x7A763395073FDE9CC7EcC6E6BDB98239fB39396b";
+  const provider = new ethers.providers.WebSocketProvider(
+    `wss://goerli-events.zksync.io/`
+  );
+
+  const contract = new ethers.Contract(
+    blockIDAddress,
+    BlockIDAccountABI.abi,
+    provider
+  );
+
+  return contract
+}
+
 
 const orchestrateIdentitySync = async (walletAddress, demandingClientId) => {
   // TODO: this orchestration should be triggered when a syncRequest event is emitted. see BLOCKCHAIN CONNECTION REQUIREMENTS 2.
@@ -46,5 +66,6 @@ const orchestrateIdentitySync = async (walletAddress, demandingClientId) => {
 }
 
 module.exports = {
+  getContract,
   orchestrateIdentitySync
 }

@@ -1,9 +1,16 @@
 const axios = require('axios');
+const { CLIENT_ID_MAP } = require( './config' );
 
 const apiKey = process.env.API_KEY || 'block-id-api-key';
 
 const getAuthorizedSources = async () => {
   // TODO: contract call, get client list [{ id, name, url }]
+  // const contractResult = [0, 1]
+
+  // const promises = contractResult.map((clientId) => ({id: clientId, data: getClient(clientId)}))
+  // const clients = await Promise.all(promises);
+
+  // const getAuthorizedClients = clients.map((client) => ({ ...client.data, id: CLIENT_ID_MAP[client.id]}))
 
   return [{id: 'client1', name: 'Exchange 1', url: 'http://localhost:3001'}, {id: 'client2', name: 'Exchange 2', url: 'http://localhost:3002'}]
 }
@@ -22,8 +29,7 @@ const getProofs = async (wallet, authorizedSources) => {
 }
 
 const getClient = async (clientId) => {
-  // TODO: contract call, get client { clientId, clientName, clientUrl }
-
+  const contractResult = {name: }
   return {id: 'client3', name: 'Exchange 3', url: 'http://localhost:3003'};
 }
 
