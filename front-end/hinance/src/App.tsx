@@ -20,7 +20,7 @@ function App() {
         <>
           <div style={{ position: "absolute", left: "30px", top: "30px" }}>
             <h2 style={{ color: "white" }}>
-              Client {process.env.REACT_APP_CLIENT}
+              Client {process.env.REACT_APP_BE_PORT}
             </h2>
           </div>
         </>

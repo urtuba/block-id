@@ -65,6 +65,7 @@ function LoginPage() {
   useEffect(() => {
     try {
       if (isSuccess) {
+        console.log(data);
         alert("Logging in with BlockID");
         navigate("/success");
       }
@@ -73,9 +74,13 @@ function LoginPage() {
     }
   }, [data, isSuccess]);
 
-  const handleContinueWithBlockid = () => {
+  const handleContinueWithBlockid = async () => {
     // Wagmi
     if (isConnected) {
+      const createdUser = await makeRequest.put("/user/wallet-address", {
+        id: localStorage.getItem("userId"),
+        walletAddress: address,
+      });
       // Wagmi contract call
       write?.();
     } else {

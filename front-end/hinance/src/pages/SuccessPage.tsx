@@ -12,6 +12,7 @@ import {
   useWaitForTransaction,
 } from "wagmi";
 import { BlockIDAccountABI } from "src/constants/block-id-abi";
+import makeRequest from "src/utils/request";
 
 function SuccessPage() {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ function SuccessPage() {
     addressOrName: "0x68a6Be86908e07932380A7Dc7Fb3773a49C1389b",
     contractInterface: BlockIDAccountABI.abi,
     functionName: "addClient",
-    args: ["Exchange3", "http://localhost:3003"],
+    args: ["Exchange35", "http://localhost:30035"],
   });
 
   const { data, write } = useContractWrite(config);
@@ -43,6 +44,7 @@ function SuccessPage() {
   useEffect(() => {
     try {
       if (isSuccess) {
+        console.log(data);
         alert("Client has been authorized!!!");
       }
     } catch (e) {
@@ -57,12 +59,14 @@ function SuccessPage() {
     navigate("/");
   };
 
-  const handleConnectYourIdentity = () => {
-    console.log("adasdas");
-    console.log(isConnected);
+  const handleConnectYourIdentity = async () => {
     if (isConnected) {
       // Wagmi contract call
       write?.();
+      const createdUser = await makeRequest.put("/user/wallet-address", {
+        id: localStorage.getItem("userId"),
+        walletAddress: address,
+      });
     } else {
       const connector = connectors.find(
         (connector) => connector.name === "MetaMask"
