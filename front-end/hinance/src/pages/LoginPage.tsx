@@ -146,7 +146,7 @@ function LoginPage() {
             <img src={continueWithBlockid} alt="continue-with-blockid" />
           </div>
         </form>
-        <h3>{dataClient}</h3>
+        {/* <h3>{dataClient}</h3> */}
       </div>
     </div>
   );
