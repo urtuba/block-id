@@ -4,6 +4,13 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 
+interface IBlockIDAccount {
+  function getAuthorizedClients()
+    external
+    view
+    returns (uint256[] memory clientIds);
+}
+
 contract BlockID is Ownable {
 
   event IdentityRequested(address indexed account, uint256 indexed targetClientId);
@@ -33,7 +40,7 @@ contract BlockID is Ownable {
   }
 
   function getAuthorizedClients(address account) public view returns (uint256[] memory clientIds) {
-    // TODO call BlockIDAccount contract
-    
+    IBlockIDAccount blockIDAccount = IBlockIDAccount(account);
+    return blockIDAccount.getAuthorizedClients();
   }
 }

@@ -69,7 +69,7 @@ contract BlockIDAccount is IAccount, IERC1271 {
     }
 
     function getAuthorizedClients()
-        public
+        external
         view
         onlyBlockID
         returns (uint256[] memory clientIds)
