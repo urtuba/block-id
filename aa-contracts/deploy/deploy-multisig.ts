@@ -3,13 +3,13 @@ import * as ethers from "ethers";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
 // Put the address of your AA factory
-const AA_FACTORY_ADDRESS = "0xd163677FD1e9D400419632a72A874849e355dDeD";
+const AA_FACTORY_ADDRESS = "0xA096402B4A884142Bb943c9096557d2b6Ca2b596";
 
 export default async function (hre: HardhatRuntimeEnvironment) {
   const provider = new Provider("https://testnet.era.zksync.dev");
   // Private key of the account used to deploy
   const wallet = new Wallet(
-    "ac1e735be8536c6534bb4f17f06f6afc73b2b5ba84ac2cfb12f7461b20c0bbe3"
+    "2ab6b8a9f6a6272b8692591f235aa1aa3ba58994feefd1a04c9f251530b4f3e8"
   ).connect(provider);
   const factoryArtifact = await hre.artifacts.readArtifact("AAFactory");
   console.log("------------------1");
@@ -32,8 +32,7 @@ export default async function (hre: HardhatRuntimeEnvironment) {
     owner1.address,
     owner2.address,
     {
-      gasPrice: ethers.utils.parseUnits("100", "gwei"),
-      gasLimit: ethers.utils.hexlify(1000000),
+      gasLimit: 1000000,
     }
   );
   await tx.wait();

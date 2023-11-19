@@ -17,15 +17,23 @@ const config: HardhatUserConfig = {
       zksync: true,
     },
     zkSyncTestnet: {
-      url: "http://localhost:8011", // "https://zksync2-testnet.zksync.dev",
+      url: "https://testnet.era.zksync.dev",
       ethNetwork: "goerli",
-      chainId: 260,
+      chainId: 280,
       zksync: true,
+      accounts: [
+        "2ab6b8a9f6a6272b8692591f235aa1aa3ba58994feefd1a04c9f251530b4f3e8",
+      ],
       // Verification endpoint for Goerli
+    },
+    scrollSepolia: {
+      url: "https://sepolia-rpc.scroll.io/" || "",
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
   },
   solidity: {
-    version: "0.8.19",
+    version: "0.8.17",
   },
 };
 
