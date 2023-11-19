@@ -41,7 +41,13 @@ function SuccessPage() {
   });
 
   useEffect(() => {
-    console.log({ isSuccess, data });
+    try {
+      if (isSuccess) {
+        alert("Client has been authorized!!!");
+      }
+    } catch (e) {
+      alert("Success");
+    }
   }, [data, isSuccess]);
 
   // Function to handle form submission

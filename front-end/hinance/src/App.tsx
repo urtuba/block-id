@@ -5,6 +5,29 @@ import hinanceLogo from "./constants/hinance.svg";
 function App() {
   // wallet style right top corner
 
+  const getNav = () => {
+    let navContent = null;
+    if (process.env.REACT_APP_CLIENT === "1") {
+      navContent = (
+        <>
+          <div style={{ position: "absolute", left: "30px", top: "30px" }}>
+            <img src={hinanceLogo} alt="hinance-logo" />
+          </div>
+        </>
+      );
+    } else {
+      navContent = (
+        <>
+          <div style={{ position: "absolute", left: "30px", top: "30px" }}>
+            <h2 style={{ color: "white" }}>
+              Client {process.env.REACT_APP_CLIENT}
+            </h2>
+          </div>
+        </>
+      );
+    }
+    return navContent;
+  };
   return (
     <>
       <div style={{ position: "absolute", right: "30px", top: "30px" }}>
@@ -20,10 +43,8 @@ function App() {
             justifyContent: "center",
           }}
         >
-          <div style={{ position: "absolute", left: "30px", top: "30px" }}>
-            <img src={hinanceLogo} alt="hinance-logo" />
-          </div>
-          <Link to="/">verify kyc</Link> | <Link to="/verify">Verify</Link> |{" "}
+          {getNav()}
+          {/* <Link to="/">verify kyc</Link> | <Link to="/verify">Verify</Link> |{" "} */}
         </nav>
         <Outlet /> {/* Where page components will be rendered */}
       </div>

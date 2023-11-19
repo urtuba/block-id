@@ -56,7 +56,13 @@ function LoginPage() {
   });
 
   useEffect(() => {
-    console.log({ isSuccess, data });
+    try {
+      if (isSuccess) {
+        alert("Logging in with BlockID");
+      }
+    } catch (e) {
+      alert("Success");
+    }
   }, [data, isSuccess]);
 
   const handleContinueWithBlockid = () => {
