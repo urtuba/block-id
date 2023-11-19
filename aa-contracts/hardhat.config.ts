@@ -26,7 +26,9 @@ const config: HardhatUserConfig = {
       ],
     },
     scrollSepolia: {
-      url: "https://sepolia-rpc.scroll.io/" || "",
+      url: "https://sepolia-rpc.scroll.io/",
+      chainId: 534351,
+      zksync: true,
       accounts: [
         "2ab6b8a9f6a6272b8692591f235aa1aa3ba58994feefd1a04c9f251530b4f3e8",
       ],
