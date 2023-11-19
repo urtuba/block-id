@@ -20,7 +20,7 @@ const IdentityVerification = require('../../models/identity-verification')
  *               source:
  *                 type: string
  *                 description: The source of the callback.
- *                 example: "source_name"
+ *                 example: "source_url"
  *               code:
  *                 type: string
  *                 description: The code received for verification.
