@@ -28,10 +28,10 @@ function SuccessPage() {
   } = useConnect();
 
   const { config, error: contractWriteError } = usePrepareContractWrite({
-    addressOrName: "0x7A763395073FDE9CC7EcC6E6BDB98239fB39396b",
+    addressOrName: "0x68a6Be86908e07932380A7Dc7Fb3773a49C1389b",
     contractInterface: BlockIDAccountABI.abi,
-    functionName: "requestIdentity",
-    args: [address, 1],
+    functionName: "addClient",
+    args: ["Exchange3", "http://localhost:3003"],
   });
 
   const { data, write } = useContractWrite(config);

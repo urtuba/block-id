@@ -9,6 +9,7 @@ import {
   useAccount,
   useConnect,
   useContractWrite,
+  useContractRead,
   usePrepareContractWrite,
   useSigner,
   useWaitForTransaction,
@@ -43,10 +44,16 @@ function LoginPage() {
   };
 
   const { config, error: contractWriteError } = usePrepareContractWrite({
-    addressOrName: "0x7A763395073FDE9CC7EcC6E6BDB98239fB39396b",
+    addressOrName: "0x68a6Be86908e07932380A7Dc7Fb3773a49C1389b",
     contractInterface: BlockIDAccountABI.abi,
-    functionName: "addClient",
-    args: ["hinance", "hinance-url"],
+    functionName: "requestIdentity",
+    args: [address, 1],
+  });
+  const { data: dataClient } = useContractRead({
+    addressOrName: "0x68a6Be86908e07932380A7Dc7Fb3773a49C1389b",
+    contractInterface: BlockIDAccountABI.abi,
+    functionName: "getClient",
+    args: [2],
   });
 
   const { data, write } = useContractWrite(config);
@@ -59,6 +66,7 @@ function LoginPage() {
     try {
       if (isSuccess) {
         alert("Logging in with BlockID");
+        navigate("/success");
       }
     } catch (e) {
       alert("Success");
@@ -67,7 +75,6 @@ function LoginPage() {
 
   const handleContinueWithBlockid = () => {
     // Wagmi
-    console.log("adasdas");
     if (isConnected) {
       // Wagmi contract call
       write?.();
@@ -139,6 +146,7 @@ function LoginPage() {
             <img src={continueWithBlockid} alt="continue-with-blockid" />
           </div>
         </form>
+        <h3>{dataClient}</h3>
       </div>
     </div>
   );
