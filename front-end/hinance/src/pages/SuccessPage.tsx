@@ -8,13 +8,16 @@ import { useAccount, useConnect, useSigner } from "wagmi";
 function SuccessPage() {
   const navigate = useNavigate();
 
-  const { connector: activeConnector, isConnected, address } = useAccount()
-  const { data: signer, isError, isLoading: signerLoading } = useSigner()
+  const { connector: activeConnector, isConnected, address } = useAccount();
+  const { data: signer, isError, isLoading: signerLoading } = useSigner();
 
-  
-
-  const { connect, connectors, error, isLoading: connectLoading, pendingConnector } =
-    useConnect();
+  const {
+    connect,
+    connectors,
+    error,
+    isLoading: connectLoading,
+    pendingConnector,
+  } = useConnect();
 
   // Function to handle form submission
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -26,19 +29,21 @@ function SuccessPage() {
   const handleConnectYourIdentity = () => {
     // Check if user connected wallet or not
     // If not, popup a modal to ask user to connect wallet
-    const connector = connectors.find((connector) => connector.name === "MetaMask")  
-    connect({connector});
+    const connector = connectors.find(
+      (connector) => connector.name === "MetaMask"
+    );
+    connect({ connector });
   };
-  
+
   const processAccountAbstraction = async () => {
     // TODO account abstraction deploy here
-  }
+  };
 
   useEffect(() => {
     if (isConnected) {
-       processAccountAbstraction()
+      processAccountAbstraction();
     }
-  }, [isConnected])
+  }, [isConnected]);
 
   return (
     <div className="kyc-container">
@@ -50,7 +55,7 @@ function SuccessPage() {
           <div style={{ display: "flex", justifyContent: "center" }}>
             <img src={successImage} alt="success" />
           </div>
-           <div
+          <div
             style={{ display: "flex", justifyContent: "center" }}
             onClick={handleConnectYourIdentity}
           >
