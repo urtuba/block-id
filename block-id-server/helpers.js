@@ -3,7 +3,7 @@ const axios = require('axios');
 export const getAuthorizedSources = async () => {
   // TODO: contract call, get client list [{ id, name, url }]
 
-  return [{id: 'Exchange1', name: 'Exchange 1', url: 'http://localhost:3001'}, {id: 'Exchange2', name: 'Exchange 2', url: 'http://localhost:3002'}]
+  return [{id: 'client1', name: 'Exchange 1', url: 'http://localhost:3001'}, {id: 'client2', name: 'Exchange 2', url: 'http://localhost:3002'}]
 }
 
 export const getProofs = async (sources) => {
@@ -19,13 +19,13 @@ export const getProofs = async (sources) => {
 export const getClient = async (clientId) => {
   // TODO: contract call, get client { clientId, clientName, clientUrl }
 
-  return {clientId: 'Exchange3', name: 'Exchange 3', clientUrl: 'http://localhost:3003'};
+  return {clientId: 'client3', name: 'Exchange 3', clientUrl: 'http://localhost:3003'};
 }
 
 export const validateProofs = async (zkProofs) => {
   // TODO: verifyProofs(zkProofs)
   // [{clientId, verified}]
-  return [{clientId: 'Exchange1', verified: true}, {clientId: 'Exchange2', verified: true}];
+  return [{clientId: 'client1', verified: true}, {clientId: 'client2', verified: true}];
 }
 
 export const validateDataConsistency = (zkProofs) => {
