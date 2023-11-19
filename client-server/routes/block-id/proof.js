@@ -91,6 +91,7 @@ module.exports = async (req, res) => {
     // Prepare input for witness generation.
     console.log("Preparing input for witness generation...");
     const input = {
+      data_hash: hashSignals(fullName, birthDate, identityNumber, nationality, birthDate),
       // TODO: Generate signature, We use client_id here temprarily
       client_id_account_pair: hashSignals(clientId, wallet),
       client_signature_issued_at_pair: hashSignals(clientId, kycIssuedAt),
