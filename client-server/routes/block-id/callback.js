@@ -48,9 +48,9 @@ module.exports = async (req, res) => {
       return res.status(404).send('User not found')
     }
     
-    const exchangeIdPath = source + 'block-id/exchange'
+    const exchangeIdPath = source + '/block-id/exchange'
     const { data, status } = await axios.get(exchangeIdPath, {
-      params: { code, wallet }
+      headers: { code, wallet }
     })
 
     if (status !== 200) {

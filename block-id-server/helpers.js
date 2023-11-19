@@ -1,14 +1,19 @@
 const axios = require('axios');
 
+const apiKey = process.env.API_KEY || 'block-id-api-key';
+
 const getAuthorizedSources = async () => {
   // TODO: contract call, get client list [{ id, name, url }]
 
   return [{id: 'client1', name: 'Exchange 1', url: 'http://localhost:3001'}, {id: 'client2', name: 'Exchange 2', url: 'http://localhost:3002'}]
 }
 
-const getProofs = async (sources) => {
+const getProofs = async (wallet, authorizedSources) => {
   const promises = authorizedSources.map(async (source) => {
-    const { data } = await axios.get(source.clientUrl + '/proof', { params: { 'block-id-api-key': process.env.API_KEY } });
+    const { data } = await axios.get(source.url + '/block-id/proof', {
+      headers: { 'block-id-api-key': apiKey },
+      params: { wallet }
+    });
     return data;
   })
 
@@ -31,11 +36,11 @@ const validateProofs = async (zkProofs) => {
 
 const validateDataConsistency = (zkProofs) => {
   const identitySignals = zkProofs.map((zkProof) => zkProof.publicSignals[1])
-  return identitySignals.every(is => is === arr[0]);
+  return identitySignals.every(is => is === identitySignals[0]);
 }
 
-const getGrantCodeFromSource = async (sourceClient) => {
-  const { data } = await axios.post(sourceClient.clientUrl + '/block-id/grant-code', { walletAddress }, { params: { 'block-id-api-key': process.env.API_KEY } });
+const getGrantCodeFromSource = async (walletAddress, sourceClient) => {
+  const { data } = await axios.post(sourceClient.url + '/block-id/grant-code', { walletAddress }, { headers: { 'block-id-api-key': apiKey } });
   return data.code;
 }
 
