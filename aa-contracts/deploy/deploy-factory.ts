@@ -18,7 +18,7 @@ export default async function (hre: HardhatRuntimeEnvironment) {
 
   const deployer = new Deployer(hre, wallet);
   const factoryArtifact = await deployer.loadArtifact("AAFactory");
-  const aaArtifact = await deployer.loadArtifact("TwoUserMultisig");
+  const aaArtifact = await deployer.loadArtifact("BlockIDAccount");
 
   // console.log(await wallet.getAllBalances());
   if (!aaArtifact.bytecode) {
