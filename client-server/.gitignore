@@ -3,3 +3,5 @@
 *.env
 artifacts/*
 !artifacts/dummy
+# Local copies of the demo env examples (cp .env.demo-client-1.example .env.demo-client-1)
+.env.demo-client-?

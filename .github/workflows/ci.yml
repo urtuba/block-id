@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # The circuit tests use the committed artifacts in circuits/artifacts. Nothing is
+      # recompiled and no powers of tau file is downloaded.
+      - name: Circuit tests
+        run: npm test -w circuits
+      # Compiles the contract with the pinned solc 0.8.37 and checks contract-data.js against it.
+      - name: Contract tests
+        run: npm test -w contracts
+      # Unit tests and the end-to-end test on a Hardhat chain.
+      - name: Protocol tests
+        run: npm test -w block-id-sdk

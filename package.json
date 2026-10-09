@@ -1,5 +1,19 @@
 {
-  "dependencies": {
-    "ethers": "^6.8.1"
+  "name": "block-id",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "BlockID: share a verified identity between exchanges without BlockID ever seeing it. ETHGlobal Istanbul 2023, restored in 2026.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "workspaces": [
+    "circuits",
+    "contracts",
+    "block-id-sdk"
+  ],
+  "scripts": {
+    "test": "npm test --workspaces --if-present"
   }
 }

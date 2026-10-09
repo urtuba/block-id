@@ -1,15 +1,35 @@
 {
   "name": "block-id-sdk",
-  "version": "1.0.0",
-  "description": "",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The BlockID protocol as one JavaScript module: identity encoding, proofs, the exchange side and the BlockID side. Runs in Node and in the browser.",
+  "license": "MIT",
   "main": "src/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "exports": {
+    ".": "./src/index.js",
+    "./node": "./src/node.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "scripts": {
+    "test": "hardhat test mocha --no-compile"
+  },
+  "engines": {
+    "node": ">=22"
+  },
   "dependencies": {
-    "snarkjs": "^0.7.2"
+    "@noble/hashes": "2.4.0",
+    "poseidon-lite": "0.3.0",
+    "snarkjs": "0.7.6"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "4.2.0",
+    "@nomicfoundation/hardhat-ethers-chai-matchers": "3.0.12",
+    "@nomicfoundation/hardhat-mocha": "4.0.0",
+    "block-id-circuits": "1.0.0",
+    "block-id-contracts": "1.0.0",
+    "chai": "6.3.0",
+    "ethers": "6.17.0",
+    "hardhat": "3.19.0",
+    "mocha": "12.0.3"
   }
 }
