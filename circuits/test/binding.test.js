@@ -2,10 +2,10 @@ import { expect } from "chai";
 import { PRIVATE_INPUTS, PUBLIC_SIGNALS } from "../index.js";
 import { isInfinity, loadR1cs, makeInput, prove, unboundPublicSignals, verify, vkey, wiresWithoutConstraint } from "./helpers.js";
 
-// A Groth16 public input that no constraint touches is not bound by the proof: the
-// proof stays valid when the verifier is given another value for it. These tests make
-// sure every public signal of the circuit is bound, and that the checks themselves
-// can fail.
+// In plain Groth16, a public input that no constraint touches is not bound by the
+// proof. snarkjs' setup adds a constraint per public input, so a tampering test alone
+// cannot catch a missing circuit constraint; the r1cs test can. These tests make sure
+// every public signal is bound, and that the checks themselves can fail.
 describe("public signal binding", () => {
   let proof, publicSignals;
 

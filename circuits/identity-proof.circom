@@ -16,12 +16,13 @@ include "poseidon.circom";
 //   [2] clientId   (id of the exchange that made the proof)
 //   [3] nonce      (the on-chain request id)
 //
-// A Groth16 public input that no constraint touches is NOT bound by the proof:
-// its verification-key point is zero, so the verifier accepts any value for it.
-// identityCommitment is bound by the Poseidon check. wallet, clientId and nonce
-// each get a dummy square constraint, the same trick Tornado Cash uses, so a proof
-// cannot be reused for another wallet, exchange or request. circuits/test checks
-// this on the verification key.
+// In plain Groth16, a public input that no constraint touches is not bound by the
+// proof: its verification-key point is zero, so the verifier accepts any value for
+// it. snarkjs' setup adds its own constraint per public input, which hides this, but
+// other toolchains may not. identityCommitment is bound by the Poseidon check.
+// wallet, clientId and nonce each get a dummy square constraint, the same trick
+// Tornado Cash uses, so a proof cannot be reused for another wallet, exchange or
+// request whatever the toolchain. circuits/test checks this on the r1cs.
 template IdentityProof() {
     // Private inputs
     signal input fullName;
