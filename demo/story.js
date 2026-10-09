@@ -1,7 +1,8 @@
 // The story of the demo, as a script over the world (world.js). It follows the sequence
 // diagram in the README: KYC at two exchanges, a grant for each, a sign-up at the third,
 // the request, the proofs, the sync, the hand-over. Every action is a real call to the
-// protocol module or the contract. The story adds only the narration and the pauses.
+// protocol module or the contract. The story adds only the narration, the pauses and, for
+// the "break it" runs, one deliberate change per run.
 //
 // Like world.js it knows no browser APIs, so the Node tests run the same script.
 import {
@@ -9,6 +10,9 @@ import {
   deriveSalt,
   encodeIdentity,
   identityCommitment,
+  proofToCalldata,
+  verifyIdentityProof,
+  Orchestrator,
 } from "../block-id-sdk/src/index.js";
 import { exchangeName, short } from "./world.js";
 
@@ -32,8 +36,43 @@ export const STEPS = [
   { id: "redeem", label: `${exchangeName(EX3)} fetches the identity and checks it` },
 ];
 
-const MODULE_ERRORS = {};
-const CONTRACT_ERRORS = {};
+/** The "break it" runs. Each starts from a fresh world. */
+export const SCENARIOS = [
+  {
+    id: "dob",
+    title: "Exchange 2 has another date of birth",
+    summary: `${exchangeName(EX2)} holds the date of birth one day off. The commitments differ, so the two exchanges do not hold the same identity.`,
+  },
+  {
+    id: "replay",
+    title: "Replay an old proof",
+    summary: "A valid proof from the first request is sent again for a new request.",
+  },
+  {
+    id: "revoke",
+    title: `The user revokes ${exchangeName(EX2)} in time`,
+    summary: `The user takes ${exchangeName(EX2)}'s grant back while BlockID is already working on the request.`,
+  },
+];
+
+const CONTRACT_ERRORS = {
+  CommitmentMismatch:
+    "The proofs show different identity commitments, so the exchanges hold different data about this person. The contract refuses to record a sync.",
+  WrongNonce:
+    "Every proof carries the id of the request it was made for. This one was made for an earlier request, so the contract refuses it. An old proof cannot be reused.",
+  NotGranted:
+    "The contract checks the user's grants at the moment it records the sync, not when the request was made. The user had taken this exchange's grant back.",
+  WrongWallet: "The proof was made for another wallet.",
+  InvalidProof: "The Groth16 proof does not verify.",
+};
+
+const MODULE_ERRORS = {
+  IDENTITY_MISMATCH:
+    "BlockID compared the identity commitments in the proofs and found two different ones. It stops before it asks for a share code or writes anything to the chain.",
+  PROOF_BINDING:
+    "BlockID checks the public numbers of every proof. This proof is for another request than the one being handled, so BlockID drops it before the chain sees it.",
+  NOT_ENOUGH_SOURCES: "Fewer than two granted sources are left.",
+};
 
 /**
  * The custom error a failed call reverted with. ethers decodes it itself for calls that
@@ -89,6 +128,9 @@ export function describeError(error, contractInterface) {
   };
 }
 
+/** A date "YYYY-MM-DD" one day later. */
+const nextDay = (date) => new Date(Date.parse(`${date}T00:00:00Z`) + 86_400_000).toISOString().slice(0, 10);
+
 export class Story {
   #release = null;
 
@@ -96,12 +138,14 @@ export class Story {
    * @param {object} options
    * @param {object} options.world from createWorld
    * @param {{fullName: string, identityNumber: string, nationality: string, dateOfBirth: string}} options.identity
+   * @param {"dob"|"replay"|"revoke"|null} [options.scenario] one deliberate change; null is the happy path
    * @param {boolean} [options.auto] true: no pauses
    * @param {() => void} [options.onChange] called when `view` changed
    */
-  constructor({ world, identity, auto = false, onChange = () => {} }) {
+  constructor({ world, identity, scenario = null, auto = false, onChange = () => {} }) {
     this.world = world;
     this.identity = identity;
+    this.scenario = scenario;
     this.auto = auto;
     this.onChange = onChange;
     this.rejections = [];
@@ -187,11 +231,15 @@ export class Story {
     this.#changed();
     try {
       await this.#prepare();
+      let synced = false;
       try {
         await this.#orchestrate();
+        synced = true;
       } catch (error) {
         this.#reject(error);
       }
+      if (synced && this.scenario === "replay") await this.#replay();
+      else if (!synced && this.scenario === "dob") await this.#dishonestOrchestrator();
       this.view.status = this.rejections.length ? "rejected" : "done";
     } catch (error) {
       this.#reject(error);
@@ -229,10 +277,14 @@ export class Story {
       this.view.grants = [...this.view.grants, id];
     };
 
+    const identityAt2 = this.scenario === "dob" ? { ...identity, dateOfBirth: nextDay(identity.dateOfBirth) } : identity;
     await this.#step("kyc1", kyc(EX1, identity));
     await this.#step("grant1", grant(EX1));
-    await this.#step("kyc2", kyc(EX2, identity));
+    await this.#step("kyc2", kyc(EX2, identityAt2));
     await this.#step("grant2", grant(EX2));
+    if (this.scenario === "dob") {
+      this.#say("ex2", `For this run, ${exchangeName(EX2)} holds the date of birth as ${identityAt2.dateOfBirth}. Everything else is the same.`);
+    }
 
     await this.#step("request", async () => {
       this.#say("ex3", `The user signs up at ${exchangeName(EX3)} and chooses “Continue with BlockID”.`);
@@ -258,6 +310,16 @@ export class Story {
     const requestId = this.requestIds.at(-1);
     world.resetRequest();
 
+    if (this.scenario === "revoke") {
+      // The user acts after BlockID has its proofs and before it writes to the chain.
+      world.beforeRecordSync = async () => {
+        this.#say("wallet", `Before BlockID records the sync, the user changes their mind and calls revoke(${EX2}) on the contract.`);
+        await this.#send("wallet", `${exchangeName(EX2)} is no longer a source for this wallet.`, world.blockId.connect(this.user).revoke(EX2));
+        this.view.grants = this.view.grants.filter((id) => id !== EX2);
+        this.#changed();
+      };
+    }
+
     const result = await world.orchestrator.handleRequest(requestId);
     this.#refreshRecords();
     this.view.sync = {
@@ -268,6 +330,53 @@ export class Story {
       sourceClientId: result.sourceClientId,
     };
     this.#say("ex3", `Done. ${exchangeName(EX3)} has the identity of a user it never did KYC for, and BlockID never saw it.`, { ok: true });
+  }
+
+  /** Replay run: after a good sync, try the old proofs for a second request. */
+  async #replay() {
+    const { world } = this;
+    const stale = world.seen.filter((item) => item.kind === "proof").map((item) => item.answer);
+    this.#say("wallet", "Now the user makes a second request. Someone holds the two proofs of the first request and tries them again.");
+    const requestId = await this.#requestIdentity();
+    this.#say("blockid", `The old proof of ${exchangeName(stale[0].clientId)} is valid: it verifies against the verification key (${await verifyIdentityProof(world.vkey, stale[0])}). But its fourth public number, the request id, is ${stale[0].publicSignals[3]} and not ${requestId}.`);
+
+    // 1. A BlockID that checks what it is given.
+    const replaying = new Orchestrator({
+      chain: world.rawChain,
+      vkey: world.vkey,
+      transport: { ...world.network.blockId(), requestProof: async (client) => stale.find((answer) => answer.clientId === client.id) },
+    });
+    this.#say("blockid", `Test 1: an orchestrator is handed the old proofs for request #${requestId}.`);
+    await replaying.handleRequest(requestId).then(
+      () => this.#unexpected("the orchestrator accepted a replayed proof"),
+      (error) => this.#reject(error),
+    );
+
+    // 2. A BlockID that does not check, and sends the old proofs to the contract anyway.
+    this.#say("blockid", "Test 2: suppose BlockID is careless or dishonest and sends them to the contract without checking.");
+    await world.rawChain.recordSync({ requestId, sourceClientId: stale[0].clientId, proofs: stale.map(proofToCalldata) }).then(
+      () => this.#unexpected("the contract accepted a replayed proof"),
+      (error) => this.#reject(error),
+    );
+  }
+
+  /** Date-of-birth run: the honest BlockID stopped. Would a dishonest one get through? */
+  async #dishonestOrchestrator() {
+    const { world } = this;
+    const requestId = this.requestIds.at(-1);
+    const proofs = world.seen
+      .filter((item) => item.kind === "proof")
+      .map((item) => item.answer)
+      .sort((a, b) => a.clientId - b.clientId);
+    this.#say("blockid", "Now suppose BlockID is careless or dishonest and sends both proofs to the contract anyway.");
+    await world.rawChain.recordSync({ requestId, sourceClientId: proofs[0].clientId, proofs: proofs.map(proofToCalldata) }).then(
+      () => this.#unexpected("the contract accepted proofs with different commitments"),
+      (error) => this.#reject(error),
+    );
+  }
+
+  #unexpected(text) {
+    this.#reject(new Error(text));
   }
 
   /** Record a rejection and write it to the log as the end of that attempt. */

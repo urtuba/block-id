@@ -1,7 +1,7 @@
 // The page: loads the proving files, starts the in-browser chain, and draws the world and
 // the story (world.js, story.js) as panels and a step log. Nothing here is protocol logic.
 import { identityCommitment } from "../block-id-sdk/src/index.js";
-import { STEPS, Story } from "./story.js";
+import { SCENARIOS, STEPS, Story } from "./story.js";
 import { EXCHANGES, createWorld, exchangeName, short } from "./world.js";
 
 const $ = (id) => document.getElementById(id);
@@ -33,7 +33,7 @@ const ARTIFACTS = {
   vkey: new URL("../circuits/artifacts/vkey.json", import.meta.url),
 };
 
-const app = { artifacts: null, vkey: null, identity: null, story: null, world: null, generation: 0, busy: true };
+const app = { artifacts: null, vkey: null, identity: null, story: null, world: null, scenario: null, generation: 0, busy: true };
 
 // ---- loading -----------------------------------------------------------------------
 
@@ -112,11 +112,11 @@ function renderControls(view) {
     next.textContent = `Next step: ${waitingStep.label}`;
     $("progress").textContent = `Step ${stepNumber} of ${STEPS.length}`;
   } else if (ended) {
-    next.textContent = view.status === "done" ? "The story is complete." : "The story stopped, see the log.";
-    $("progress").textContent = view.status === "done" ? "Done" : "Stopped";
+    next.textContent = view.status === "done" ? "The story is complete. Try “Break it” below." : "This run ended in a rejection, see above.";
+    $("progress").textContent = view.status === "done" ? "Done" : "Rejected";
   } else {
-    next.textContent = "Working…";
-    $("progress").textContent = `Step ${stepNumber} of ${STEPS.length}`;
+    next.textContent = app.scenario ? "Running…" : "Working…";
+    $("progress").textContent = app.scenario ? `Break it: ${SCENARIOS.find((s) => s.id === app.scenario).title}` : `Step ${stepNumber} of ${STEPS.length}`;
   }
   next.disabled = app.busy || !waitingStep;
   $("btn-all").disabled = app.busy || ended || app.story?.auto;
@@ -240,15 +240,40 @@ function renderResult(view) {
   }
   box.hidden = false;
   box.className = `result ${view.status}`;
+  const scenario = SCENARIOS.find((s) => s.id === app.scenario);
+
   if (view.status === "done") {
     fill(box,
       el("h2", {}, "It worked: Hinance has the verified identity"),
-      el("p", {}, `${exchangeName(view.sync.sourceClientId)} handed it over. The chain holds a record of the sync (${view.sync.gasUsed.toLocaleString("en-US")} gas for two proofs), and BlockID saw only proofs and a commitment.`),
+      el("p", {}, `${exchangeName(view.sync.sourceClientId)} handed it over. The chain holds a record of the sync (${view.sync.gasUsed.toLocaleString("en-US")} gas for two proofs), and BlockID saw only proofs and a commitment. Now try to cheat.`),
     );
     return;
   }
 
-  fill(box, el("h2", {}, "The story stopped"), view.rejections.map((rejection) => el("p", {}, `${rejection.label}: ${rejection.explanation}`)));
+  fill(box,
+    el("h2", {}, scenario ? `Rejected: ${scenario.title}` : "Rejected"),
+    scenario ? el("p", {}, scenario.summary) : null,
+    view.rejections.map((rejection) =>
+      el(
+        "div",
+        { class: "why" },
+        el("p", { class: "layer" }, `Refused by: ${rejection.layer}`),
+        el("code", { class: "label" }, rejection.label),
+        el("p", {}, rejection.explanation),
+      ),
+    ),
+    el(
+      "ul",
+      {},
+      el("li", {}, view.sync ? `Syncs recorded on the chain: 1 (request ${view.sync.requestId}).` : "Syncs recorded on the chain: none."),
+      el("li", {}, view.records[3] ? `${exchangeName(3)} holds the identity from the first, honest request.` : `${exchangeName(3)} holds no identity for this user.`),
+    ),
+  );
+}
+
+function renderScenarios(view) {
+  const ready = !app.busy && (view.status === "done" || view.status === "rejected");
+  for (const button of document.querySelectorAll(".scenario")) button.disabled = !ready;
 }
 
 function render() {
@@ -259,6 +284,7 @@ function render() {
   renderPanels(view);
   renderSeen(view);
   renderResult(view);
+  renderScenarios(view);
   $("app").dataset.state = app.busy ? "setup" : view.status;
 }
 
@@ -280,10 +306,11 @@ function addLog(entry) {
 
 // ---- runs ----------------------------------------------------------------------------
 
-/** Start the guided story on a fresh chain. */
-async function startRun() {
+/** Start a story on a fresh chain. `scenario` null is the guided story. */
+async function startRun(scenario = null) {
   const generation = ++app.generation;
   app.busy = true;
+  app.scenario = scenario;
   $("log").replaceChildren();
   for (const node of document.querySelectorAll(".panel")) node.classList.remove("active");
   if (app.story) render();
@@ -295,13 +322,29 @@ async function startRun() {
   if (generation !== app.generation) return; // the visitor started over while this was loading
 
   world.on((entry) => generation === app.generation && addLog(entry));
-  const story = new Story({ world, identity: app.identity, onChange: () => generation === app.generation && render() });
+  const story = new Story({ world, identity: app.identity, scenario, auto: scenario !== null, onChange: () => generation === app.generation && render() });
   app.world = world;
   app.story = story;
   app.busy = false;
   app.setupMs = Math.round(performance.now() - started);
   render();
-  story.run().then(() => generation === app.generation && render());
+  story.run().then(() => {
+    if (generation !== app.generation) return;
+    render();
+    if (scenario) $("result").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "nearest" });
+  });
+}
+
+function buildScenarioButtons() {
+  $("scenarios").replaceChildren(
+    ...SCENARIOS.map((scenario) =>
+      el("button", { type: "button", class: "scenario", "data-scenario": scenario.id, disabled: true }, el("span", { class: "t" }, scenario.title), el("span", { class: "s" }, scenario.summary)),
+    ),
+  );
+  $("scenarios").addEventListener("click", (event) => {
+    const button = event.target.closest(".scenario");
+    if (button && !button.disabled) startRun(button.dataset.scenario).catch(fatal);
+  });
 }
 
 function fatal(error) {
@@ -320,6 +363,7 @@ async function main() {
   app.vkey = files.vkey;
   app.identity = newIdentity();
   renderIdentityLine();
+  buildScenarioButtons();
 
   $("btn-next").addEventListener("click", () => app.story?.next());
   $("btn-all").addEventListener("click", () => app.story?.runAll());

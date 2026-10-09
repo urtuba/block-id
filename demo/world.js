@@ -55,6 +55,8 @@ export async function createWorld({ ethers, provider, fund, artifacts, vkey, sel
     seen: [],
     /** story hook: `await world.gate(step)` pauses the protocol until the story lets it go */
     gate: async () => {},
+    /** story hook: runs just before BlockID records a sync on-chain */
+    beforeRecordSync: async () => {},
     on(listener) {
       listeners.add(listener);
       return () => listeners.delete(listener);
@@ -150,6 +152,7 @@ export async function createWorld({ ethers, provider, fund, artifacts, vkey, sel
     ...world.rawChain,
     recordSync: async (args) => {
       await world.gate("record");
+      await world.beforeRecordSync(args);
       say("blockid", `BlockID sends recordSync for request #${args.requestId} with ${args.proofs.length} proofs.`);
       const { txHash } = await world.rawChain.recordSync(args);
       const receipt = await provider.getTransactionReceipt(txHash);
