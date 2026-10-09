@@ -58,7 +58,7 @@
     </section>
 
     <section id="unsupported" class="notice error" role="alert" hidden>
-      <h2>This browser cannot run the demo</h2>
+      <h2 id="unsupported-title">This browser cannot run the demo</h2>
       <p id="unsupported-text"></p>
       <p>The demo needs a current Chrome, Edge, Firefox or Safari with JavaScript on. It loads its libraries from <code>cdn.jsdelivr.net</code> and its files from this site.</p>
     </section>
@@ -163,6 +163,7 @@
       import("./demo/main.js").catch((error) => {
         console.error(error);
         const box = document.getElementById("unsupported");
+        document.getElementById("unsupported-title").textContent = "The demo could not load";
         document.getElementById("unsupported-text").textContent =
           "A file did not load, most likely a library from cdn.jsdelivr.net (" + (error && error.message ? error.message : error) + "). Check your connection and reload.";
         box.hidden = false;
