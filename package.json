@@ -9,7 +9,8 @@
     "node": ">=22"
   },
   "workspaces": [
-    "circuits"
+    "circuits",
+    "contracts"
   ],
   "scripts": {
     "test": "npm test --workspaces --if-present"
