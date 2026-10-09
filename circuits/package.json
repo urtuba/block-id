@@ -1,0 +1,33 @@
+{
+  "name": "block-id-circuits",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The BlockID zero-knowledge circuit (circom, Groth16) and its committed build artifacts.",
+  "license": "MIT",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./artifacts/*": "./artifacts/*"
+  },
+  "scripts": {
+    "test": "mocha",
+    "build": "node scripts/build.mjs",
+    "ptau": "node scripts/download-ptau.mjs",
+    "verify": "node scripts/verify.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "circomlib": "2.0.5"
+  },
+  "devDependencies": {
+    "chai": "6.3.0",
+    "circom2": "0.2.23",
+    "mocha": "12.0.3",
+    "poseidon-lite": "0.3.0",
+    "r1csfile": "0.0.48",
+    "snarkjs": "0.7.6"
+  }
+}

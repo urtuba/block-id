@@ -1,3 +1,13 @@
 *node_modules*
-*package-lock.json
 *.env
+.DS_Store
+
+# The root lockfile is committed; legacy 2023 folders keep ignoring theirs.
+*package-lock.json
+!/package-lock.json
+
+# Powers of tau files are large and downloaded on demand. Never commit them.
+*.ptau
+
+# Intermediate output of the circuit build (r1cs, sym, ptau, unfinished zkeys).
+circuits/build/
