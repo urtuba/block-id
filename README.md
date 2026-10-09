@@ -14,14 +14,14 @@ The [litepaper](BlockID%20Protocol%20Litepaper.pdf) describes the idea.
 
 ## Team
 
-Five people built the 2023 version. The areas are taken from `git log` at the tag `original-2023` (which folders each person's commits touched), not from memory.
+Five people built the 2023 version. The areas are taken from `git log` at the tag `original-2023` (which folders each person's commits touched), plus design work that was done outside the repo.
 
 | Who | Commits | Main area |
 |---|---|---|
 | Samed Kahyaoglu ([@urtuba](https://github.com/urtuba)) | 45 | The demo exchange backend (`client-server`), the orchestrator (`block-id-server`), the protocol sequence diagram |
 | ugurcanuncuoglu ([@ugurcanuncuoglu](https://github.com/ugurcanuncuoglu)) | 27 | The exchange front end (`front-end/hinance`) and the landing page, the zkSync contracts (`aa-contracts`) |
 | Toprak Keskin ([@toprakkeskin](https://github.com/toprakkeskin)) | 22 | The ZK circuits, the trusted setup scripts and the proof SDK (`block-id-chain/zk`, `block-id-sdk`) |
-| Oguz Dogan ([@oguz-dogan](https://github.com/oguz-dogan)) | 3 | The favicon |
+| Oguz Dogan ([@oguz-dogan](https://github.com/oguz-dogan)) | 3 | Design: the project's visual design (done outside the repo) and the favicon |
 | defunicorn ([@defunicorn](https://github.com/defunicorn)) | 1 | The litepaper |
 
 The 2026 restoration (circuits, contract, protocol module, tests) was done with an AI agent, Claude Sonnet 5.5; each commit says so.
