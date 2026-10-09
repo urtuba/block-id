@@ -11,7 +11,8 @@
   "workspaces": [
     "circuits",
     "contracts",
-    "block-id-sdk"
+    "block-id-sdk",
+    "demo"
   ],
   "scripts": {
     "test": "npm test --workspaces --if-present"

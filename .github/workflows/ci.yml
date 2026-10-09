@@ -27,3 +27,7 @@ jobs:
       # Unit tests and the end-to-end test on a Hardhat chain.
       - name: Protocol tests
         run: npm test -w block-id-sdk
+      # The demo's story and its three break-it runs, on a Hardhat chain with real proofs, plus
+      # checks that the page's import map, imports and files agree. Not the page in a browser.
+      - name: Demo tests
+        run: npm test -w demo
