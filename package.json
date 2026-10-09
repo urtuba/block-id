@@ -10,7 +10,8 @@
   },
   "workspaces": [
     "circuits",
-    "contracts"
+    "contracts",
+    "block-id-sdk"
   ],
   "scripts": {
     "test": "npm test --workspaces --if-present"
