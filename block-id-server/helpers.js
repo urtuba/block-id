@@ -29,7 +29,8 @@ const getProofs = async (wallet, authorizedSources) => {
 }
 
 const getClient = async (clientId) => {
-  const contractResult = {name: }
+  // TODO: contract call. The 2023 code had a half-written `const contractResult = {name: }` here,
+  // a syntax error that stopped the server from starting. Removed in 2026; still a stub.
   return {id: 'client3', name: 'Exchange 3', url: 'http://localhost:3003'};
 }
 
