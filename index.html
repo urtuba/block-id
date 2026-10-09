@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BlockID live demo</title>
+  <meta name="description" content="KYC once, reuse everywhere, and BlockID never sees your data. A live demo with real zero-knowledge proofs and a real contract, running in your browser.">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" href="Favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="demo/styles.css">
+
+  <!--
+    No build step. The page is plain ES modules. Every library comes from jsDelivr at an
+    exact version; there are no other external requests. The versions of snarkjs,
+    poseidon-lite, @noble/hashes, ethers and tc-id are the ones in package-lock.json (a
+    test checks that). The two Tevm packages run the in-browser EVM, as in tweet-verifier.
+    The protocol itself (block-id-sdk/src) and the contract (contracts/contract-data.js)
+    are loaded from this repository, as they are.
+  -->
+  <script type="importmap">
+  {
+    "imports": {
+      "snarkjs": "https://cdn.jsdelivr.net/npm/snarkjs@0.7.6/+esm",
+      "poseidon-lite/poseidon5": "https://cdn.jsdelivr.net/npm/poseidon-lite@0.3.0/poseidon5/+esm",
+      "@noble/hashes/sha2.js": "https://cdn.jsdelivr.net/npm/@noble/hashes@2.4.0/sha2.js/+esm",
+      "ethers": "https://cdn.jsdelivr.net/npm/ethers@6.17.0/+esm",
+      "tc-id": "https://cdn.jsdelivr.net/npm/tc-id@2.1.1/+esm",
+      "@tevm/node": "https://cdn.jsdelivr.net/npm/@tevm/node@1.0.0-rc.153/+esm",
+      "@tevm/decorators": "https://cdn.jsdelivr.net/npm/@tevm/decorators@1.0.0-rc.151/+esm"
+    }
+  }
+  </script>
+</head>
+<body>
+  <a class="skip" href="#app">Skip to the demo</a>
+
+  <header class="top">
+    <div class="wrap top-inner">
+      <img class="mark" src="Favicon.svg" width="32" height="32" alt="">
+      <div>
+        <h1>BlockID <span class="light">live demo</span></h1>
+        <p class="tagline">KYC once, reuse everywhere, and BlockID never sees your data.</p>
+      </div>
+      <a class="repo" href="https://github.com/urtuba/block-id">Code and README</a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="intro" aria-labelledby="intro-h">
+      <h2 id="intro-h">What you are about to see</h2>
+      <p>A user passes KYC at <strong>Violex</strong> and <strong>Mintex</strong>. Later, at <strong>Hinance</strong>, the user clicks <em>Continue with BlockID</em> and Hinance gets the verified identity. BlockID checks that both exchanges know the same person, using zero-knowledge proofs, and never sees a name or an ID number.</p>
+      <p>It all runs in this tab: a small blockchain, the real BlockID contract, real Groth16 proofs, and the real protocol code from this repository. No wallet, no test ETH, no server. Nothing you do here leaves your browser.</p>
+    </section>
+
+    <section id="status" class="status" role="status" aria-live="polite">
+      <p id="status-text">Starting…</p>
+      <div id="status-bar" class="bar" hidden><span id="status-fill"></span></div>
+    </section>
+
+    <section id="unsupported" class="notice error" role="alert" hidden>
+      <h2 id="unsupported-title">This browser cannot run the demo</h2>
+      <p id="unsupported-text"></p>
+      <p>The demo needs a current Chrome, Edge, Firefox or Safari with JavaScript on. It loads its libraries from <code>cdn.jsdelivr.net</code> and its files from this site.</p>
+    </section>
+
+    <noscript>
+      <section class="notice error"><h2>JavaScript is off</h2><p>The demo runs in your browser and needs JavaScript.</p></section>
+    </noscript>
+
+    <div id="app" hidden>
+      <section class="controls" aria-label="Controls">
+        <p id="progress" class="progress"></p>
+        <div class="buttons">
+          <button id="btn-next" class="primary" type="button"></button>
+          <button id="btn-all" type="button">Run all</button>
+          <button id="btn-restart" type="button">Start over</button>
+          <button id="btn-identity" type="button" title="Start over with another fake person">New identity</button>
+        </div>
+        <p class="identity-line">The user in this story: <strong id="identity-name"></strong>, ID number <code id="identity-number"></code>, born <span id="identity-dob"></span>. Fake data, made on this page.</p>
+      </section>
+
+      <section id="result" class="result" role="status" aria-live="polite" hidden></section>
+
+      <section class="panels" aria-label="Who does what">
+        <article class="panel wallet" id="panel-wallet" data-actor="wallet" aria-labelledby="h-wallet">
+          <h3 id="h-wallet">Your wallet</h3>
+          <p class="sub">A demo wallet made in this page</p>
+          <div class="body" id="body-wallet"></div>
+        </article>
+
+        <article class="panel ex1" id="panel-ex1" data-actor="ex1" aria-labelledby="h-ex1">
+          <h3 id="h-ex1"><span class="chip">Exchange 1</span> Violex</h3>
+          <p class="sub">Source</p>
+          <div class="body" id="body-ex1"></div>
+        </article>
+
+        <article class="panel ex2" id="panel-ex2" data-actor="ex2" aria-labelledby="h-ex2">
+          <h3 id="h-ex2"><span class="chip">Exchange 2</span> Mintex</h3>
+          <p class="sub">Source</p>
+          <div class="body" id="body-ex2"></div>
+        </article>
+
+        <article class="panel ex3" id="panel-ex3" data-actor="ex3" aria-labelledby="h-ex3">
+          <h3 id="h-ex3"><img class="hinance" src="front-end/hinance/src/constants/hinance.svg" width="104" height="21" alt="Hinance"> <span class="chip">Exchange 3</span></h3>
+          <p class="sub">Target: the user signs up here</p>
+          <div class="body" id="body-ex3"></div>
+        </article>
+
+        <article class="panel blockid" id="panel-blockid" data-actor="blockid" aria-labelledby="h-blockid">
+          <h3 id="h-blockid">BlockID</h3>
+          <p class="sub">Orchestrator and contract</p>
+          <div class="body" id="body-blockid"></div>
+        </article>
+      </section>
+
+      <section class="log-section" aria-labelledby="log-h">
+        <h2 id="log-h">Step log</h2>
+        <ol id="log" class="log" tabindex="0" aria-label="Step log"></ol>
+      </section>
+
+      <section class="seen" id="seen" aria-labelledby="seen-h">
+        <h2 id="seen-h">What BlockID saw</h2>
+        <div id="seen-body"></div>
+      </section>
+
+      <section class="break" id="break" aria-labelledby="break-h">
+        <h2 id="break-h">Break it</h2>
+        <p>Finish the story first, then try to cheat. Each button starts from a fresh chain and ends in a rejection you can read.</p>
+        <div class="scenarios" id="scenarios"></div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="wrap foot">
+    <h2>How this demo works</h2>
+    <ul>
+      <li>The chain is <a href="https://tevm.sh">Tevm</a>, an EVM written in JavaScript, started in this tab. The contract is the one in <code>contracts/</code>; the page deploys it on load.</li>
+      <li>The proofs are made in your browser with <a href="https://github.com/iden3/snarkjs">snarkjs</a> from the files in <code>circuits/artifacts/</code>, and checked twice: by BlockID's code, then by the contract.</li>
+      <li>The demo wallet is a random key made on this page. It lives in memory only and is gone when you close the tab.</li>
+      <li>On a real network the sync would be public: observers would see the wallet, the exchanges and the commitment. Here, nothing leaves your browser.</li>
+      <li>The look of the exchange comes from the 2023 hackathon front end. The favicon is by Oguz Dogan.</li>
+    </ul>
+  </footer>
+
+  <script>
+    // Import maps and WebAssembly are required. Say so before anything else runs.
+    (function () {
+      var missing = [];
+      if (!(window.HTMLScriptElement && HTMLScriptElement.supports && HTMLScriptElement.supports("importmap"))) missing.push("ES module import maps");
+      if (typeof WebAssembly !== "object") missing.push("WebAssembly");
+      if (typeof BigInt !== "function") missing.push("BigInt");
+      if (!(window.crypto && window.crypto.getRandomValues)) missing.push("window.crypto");
+      if (missing.length) {
+        window.__blockIdUnsupported = missing.join(", ");
+        document.getElementById("unsupported-text").textContent = "It is missing: " + missing.join(", ") + ".";
+        document.getElementById("unsupported").hidden = false;
+        document.getElementById("status").hidden = true;
+      }
+    })();
+  </script>
+  <script type="module">
+    if (!window.__blockIdUnsupported) {
+      import("./demo/main.js").catch((error) => {
+        console.error(error);
+        const box = document.getElementById("unsupported");
+        document.getElementById("unsupported-title").textContent = "The demo could not load";
+        document.getElementById("unsupported-text").textContent =
+          "A file did not load, most likely a library from cdn.jsdelivr.net (" + (error && error.message ? error.message : error) + "). Check your connection and reload.";
+        box.hidden = false;
+        document.getElementById("status").hidden = true;
+      });
+    }
+  </script>
+</body>
+</html>
